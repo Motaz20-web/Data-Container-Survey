@@ -418,7 +418,7 @@
 
             // Kirim data ke Google Apps Script
             try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbzCtzYpRu4fJ19EJVAhW8tVf_vn6t9XvtzbeXtNhLoB4b-NWCw8SLVx02t5ttzu4jXS/exec', {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzrvsmlL0RQ0WLN30dk2abuRfFGRvq7iFQuaUxna5GtE2QRug2ln_KOhLBffNjupBWe/exec', {
                     method: 'POST',
                     body: JSON.stringify(formData),
                     headers: { 'Content-Type': 'application/json' }
