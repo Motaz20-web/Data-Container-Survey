@@ -311,9 +311,9 @@
                         <option value="40'GP">40'GP</option>
                         <option value="40'HC">40'HC</option>
                         <option value="45'HC">45'HC</option>
-                        <option value="20RF">20RF</option>
-                        <option value="40RH">40RH</option>
-                        <option value="25RF">25RF</option>
+                        <option value="20'RF">20'RF</option>
+                        <option value="40'RH">40'RH</option>
+                        <option value="25'RF">25'RF</option>
                     </select>
                 </div>
                 <div class="form-group set-temp-group" id="set-temp-group-1">
@@ -334,7 +334,7 @@
         function toggleSetTemp(containerId) {
             const setTempGroup = document.getElementById(`set-temp-group-${containerId}`);
             const containerType = document.getElementById(`container-type-${containerId}`).value;
-            const refrigeratedTypes = ["20RF", "40RH", "25RF"];
+            const refrigeratedTypes = ["20'RF", "40'RH", "25'RF"];
             setTempGroup.style.display = refrigeratedTypes.includes(containerType) ? 'block' : 'none';
         }
 
@@ -357,9 +357,9 @@
                         <option value="40'GP">40'GP</option>
                         <option value="40'HC">40'HC</option>
                         <option value="45'HC">45'HC</option>
-                        <option value="20RF">20RF</option>
-                        <option value="40RH">40RH</option>
-                        <option value="25RF">25RF</option>
+                        <option value="20'RF">20'RF</option>
+                        <option value="40'RH">40'RH</option>
+                        <option value="25'RF">25'RF</option>
                     </select>
                 </div>
                 <div class="form-group set-temp-group" id="set-temp-group-${containerCount}">
@@ -400,9 +400,9 @@
                                 <option value="40'GP">40'GP</option>
                                 <option value="40'HC">40'HC</option>
                                 <option value="45'HC">45'HC</option>
-                                <option value="20RF">20RF</option>
-                                <option value="40RH">40RH</option>
-                                <option value="25RF">25RF</option>
+                                <option value="20'RF">20'RF</option>
+                                <option value="40'RH">40'RH</option>
+                                <option value="25'RF">25'RF</option>
                             </select>
                         </div>
                         <div class="form-group set-temp-group" id="set-temp-group-1">
@@ -416,5 +416,118 @@
             }, 3000);
         });
     </script>
+    <script>
+    let containerCount = 1;
+
+    function toggleSetTemp(containerId) {
+        const setTempGroup = document.getElementById(`set-temp-group-${containerId}`);
+        const containerType = document.getElementById(`container-type-${containerId}`).value;
+        const refrigeratedTypes = ["20'RF", "40'RH", "25'RF"];
+        setTempGroup.style.display = refrigeratedTypes.includes(containerType) ? 'block' : 'none';
+    }
+
+    function addContainer() {
+        containerCount++;
+        const containerDetails = document.getElementById('container-details');
+        const newContainerGroup = document.createElement('div');
+        newContainerGroup.className = 'container-group';
+        newContainerGroup.id = `container-group-${containerCount}`;
+        newContainerGroup.innerHTML = `
+            <button type="button" class="remove-container" onclick="removeContainer(${containerCount})">×</button>
+            <div class="form-group">
+                <label for="container-number-${containerCount}">Container Number</label>
+                <input type="text" id="container-number-${containerCount}" name="container-number-${containerCount}">
+            </div>
+            <div class="form-group">
+                <label for="container-type-${containerCount}">Container Type</label>
+                <select id="container-type-${containerCount}" name="container-type-${containerCount}" onchange="toggleSetTemp(${containerCount})">
+                    <option value="20'GP">20'GP</option>
+                    <option value="40'GP">40'GP</option>
+                    <option value="40'HC">40'HC</option>
+                    <option value="45'HC">45'HC</option>
+                    <option value="20'RF">20'RF</option>
+                    <option value="40'RH">40'RH</option>
+                    <option value="25'RF">25'RF</option>
+                </select>
+            </div>
+            <div class="form-group set-temp-group" id="set-temp-group-${containerCount}">
+                <label for="set-temp-${containerCount}">Set Temp (°C)</label>
+                <input type="text" id="set-temp-${containerCount}" name="set-temp-${containerCount}">
+            </div>
+        `;
+        containerDetails.appendChild(newContainerGroup);
+        toggleSetTemp(containerCount);
+    }
+
+    function removeContainer(containerId) {
+        const containerGroup = document.getElementById(`container-group-${containerId}`);
+        if (containerGroup) {
+            containerGroup.remove();
+        }
+    }
+
+    document.getElementById('survey-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        // Kumpulkan data dari form
+        const formData = {};
+        const inputs = this.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.name) {
+                formData[input.name] = input.value;
+            }
+        });
+
+        // Kirim data ke Google Apps Script
+        try {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbzCtzYpRu4fJ19EJVAhW8tVf_vn6t9XvtzbeXtNhLoB4b-NWCw8SLVx02t5ttzu4jXS/exec', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                const thankYouMessage = document.getElementById('thank-you-message');
+                thankYouMessage.style.display = 'block';
+                setTimeout(() => {
+                    thankYouMessage.style.display = 'none';
+                    this.reset();
+                    const containerDetails = document.getElementById('container-details');
+                    containerDetails.innerHTML = `
+                        <div class="container-group" id="container-group-1">
+                            <button type="button" class="remove-container" onclick="removeContainer(1)" style="display: none;">×</button>
+                            <div class="form-group">
+                                <label for="container-number-1">Container Number</label>
+                                <input type="text" id="container-number-1" name="container-number-1">
+                            </div>
+                            <div class="form-group">
+                                <label for="container-type-1">Container Type</label>
+                                <select id="container-type-1" name="container-type-1" onchange="toggleSetTemp(1)">
+                                    <option value="20'GP">20'GP</option>
+                                    <option value="40'GP">40'GP</option>
+                                    <option value="40'HC">40'HC</option>
+                                    <option value="45'HC">45'HC</option>
+                                    <option value="20'RF">20'RF</option>
+                                    <option value="40'RH">40'RH</option>
+                                    <option value="25'RF">25'RF</option>
+                                </select>
+                            </div>
+                            <div class="form-group set-temp-group" id="set-temp-group-1">
+                                <label for="set-temp-1">Set Temp (°C)</label>
+                                <input type="text" id="set-temp-1" name="set-temp-1">
+                            </div>
+                        </div>
+                    `;
+                    containerCount = 1;
+                    toggleSetTemp(1);
+                }, 3000);
+            } else {
+                alert('Error submitting data: ' + result.message);
+            }
+        } catch (error) {
+            alert('Error submitting data: ' + error.message);
+        }
+    });
+</script>
 </body>
 </html>
