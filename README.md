@@ -54,7 +54,7 @@
             padding: 0;
             font-family: 'Poppins', Arial, sans-serif;
             background-color: #4682B4; /* Biru laut sebagai fallback */
-            background-image: url('https://github.com/Motaz20-web/Data-Container-Survey/blob/main/aerial-view-container-cargo-ship-sea.jpg'); /* Path relatif untuk GitHub */
+            background-image: url('assets/aerial-view-container-cargo-ship-sea.jpg'); /* Path relatif untuk GitHub */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
